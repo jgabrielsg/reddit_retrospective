@@ -21,3 +21,9 @@ export const redditStore = writable(null);
  * @type {import('svelte/store').Writable<boolean>}
  */
 export const isLoading = writable(false);
+
+/**
+ * Store para controlar se já recebeu o zip
+ * @type {import('svelte/store').Writable<boolean>}
+ */
+export const zipAdded = writable(false);

@@ -18,7 +18,7 @@ async function fetchStatsFromJson(permalink, isComment) {
     for (let i = 0; i < 3; i++) {
         try {
             // Delay um pouco maior para comentários pois são muitos
-            await wait(300 + Math.random() * 500);
+            await wait(800 + Math.random() * 400);
 
             const response = await fetch(proxyUrl);
 
@@ -73,7 +73,7 @@ async function enrichData(processedData) {
     // Atualização final dos posts
     redditStore.update(store => ({ ...store, posts: [...posts] }));
 
-    // 2. Processar COMENTÁRIOS (Novo)
+    // 2. Processar COMENTÁRIOS
     const comments = [...processedData.comments];
     console.log(`🌐 Iniciando enriquecimento de ${comments.length} comentários...`);
 
