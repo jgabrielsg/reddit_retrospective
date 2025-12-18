@@ -13,12 +13,12 @@ async function fetchStatsFromJson(permalink, isComment) {
     }
     url = `${url}.json`;
 
-    const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
+    // Usando CORS Proxy público direto
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
 
     for (let i = 0; i < 3; i++) {
         try {
-            // Delay um pouco maior para comentários pois são muitos
-            await wait(800 + Math.random() * 400);
+            await wait(500 + Math.random() * 500);
 
             const response = await fetch(proxyUrl);
 
@@ -26,13 +26,11 @@ async function fetchStatsFromJson(permalink, isComment) {
                 const data = await response.json();
 
                 if (isComment) {
-                    // Lógica para Comentários: data[1] é a lista de comentários, children[0] é o comentário alvo
                     try {
                         const commentData = data[1].data.children[0].data;
                         return { ups: commentData.ups || 0, comments: 0 };
                     } catch (e) { return { ups: 0, comments: 0 }; }
                 } else {
-                    // Lógica para Posts
                     try {
                         const postData = data[0].data.children[0].data;
                         return { 
@@ -41,13 +39,13 @@ async function fetchStatsFromJson(permalink, isComment) {
                         };
                     } catch (e) { return { ups: 0, comments: 0 }; }
                 }
-            } else if (response.status === 429) {
-                console.warn("Rate Limit! Esperando 10s...");
+            } else if (response.status === 429 || response.status === 403) {
+                console.warn("Rate Limit ou Bloqueio! Esperando 10s...");
                 await wait(10000);
             }
         } catch (error) {
             console.error(`Erro ao buscar ${url}:`, error);
-            await wait(1000);
+            await wait(2000);
         }
     }
     return { ups: 0, comments: 0 };
