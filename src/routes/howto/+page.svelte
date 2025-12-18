@@ -26,7 +26,9 @@
           <div class="instruction-block">
             <p><strong>A. Type of Request:</strong> Select <span class="highlight">General Data Protection Regulation (GDPR)</span>. <br><small>This package includes your posts, comments, votes, and preferences.</small></p>
             
-            <p><strong>B. Date Range:</strong> You can select "I want data from my full time at Reddit". <br><small>Our app will automatically filter and show only your 2025 stats.</small></p>
+            <p><strong>B. Date Range:</strong> You can select "I want data from my full time at Reddit". <br><small>Our app will automatically filter and show only your 2025 stats, but...</small></p>
+
+            <p><strong>WARNING!</strong> If you select your full time data, your upvotes (posts and comments), only them, will not be able to be filtered (since there's no data for <i>date of upvote</i>)</p>
           </div>
 
           <div class="image-wrapper">

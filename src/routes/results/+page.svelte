@@ -69,7 +69,7 @@
 
     activityMonthly = getMonthlyData($redditStore.posts, $redditStore.comments);
     activitySubreddits = getSubredditData([$redditStore.posts, $redditStore.comments], 3);
-    upvotesSubreddits = getSubredditData([$redditStore.post_votes, $redditStore.comment_votes], 5);
+    upvotesSubreddits = getSubredditData([$redditStore.post_votes, $redditStore.comment_votes], 10);
 
     triggerAnimations();
   }
@@ -226,6 +226,7 @@
                     <div class="ranking-header orange">
                         <div class="header-title">
                             <h3>Most Upvoted In</h3>
+                            <p>Not only 2025 if you zipped all history, no data for date of upvote</p>
                             <span class="badge-count">Top 10</span>
                         </div>
                         <span class="icon-type">⬆️</span>
@@ -330,7 +331,9 @@
         <section class="fun-section animate-on-scroll">
             <div class="fun-text-side">
                 <h2>The Tribes You Belong To</h2>
-                <p>These are the places where you spent your time debating, laughing, and sharing.</p>
+                <p>These are the places where you spent your time debating, laughing, and sharing. It sums 
+                    both your posts and comments on that community
+                </p>
                 <div class="fun-image-placeholder">🌍</div>
             </div>
             <div class="fun-chart-side">

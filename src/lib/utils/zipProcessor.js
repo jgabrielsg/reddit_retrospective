@@ -2,8 +2,11 @@ import JSZip from 'jszip';
 import Papa from 'papaparse';
 import { redditStore, isLoading } from '$lib/stores/dataStore.js';
 
-const TARGET_FILES = ['posts.csv', 'comments.csv', 'post_votes.csv', 'comment_votes.csv'];
+// Definição do intervalo de tempo (Ano de 2025)
+const START_DATE_2025 = new Date('2025-01-01T00:00:00');
+const END_DATE_2025 = new Date('2025-12-31T23:59:59');
 
+const TARGET_FILES = ['posts.csv', 'comments.csv', 'post_votes.csv', 'comment_votes.csv'];
 const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function fetchStatsFromJson(permalink, isComment) {
@@ -89,12 +92,13 @@ async function enrichData(processedData) {
     }
     // Atualização final dos comentários
     redditStore.update(store => ({ ...store, comments: [...comments] }));
-    console.log("✅ Enriquecimento completo.");
+    console.log("Enriquecimento completo.");
 }
 
 export async function handleZipUpload(file) {
     isLoading.set(true);
     const zip = new JSZip();
+    
     const processedData = { posts: [], comments: [], post_votes: [], comment_votes: [] };
 
     try {
@@ -119,19 +123,45 @@ export async function handleZipUpload(file) {
                 else if (cleanFileName === 'posts.csv') key = 'posts';
                 else if (cleanFileName === 'comments.csv') key = 'comments';
 
-                if (key) processedData[key] = parsed.data;
+                if (key) {
+                    let rawData = parsed.data;
+
+                    if (key === 'posts' || key === 'comments') {
+                        console.log(`Filtrando ${key} para 2025... Total antes: ${rawData.length}`);
+                        
+                        processedData[key] = rawData.filter(item => {
+                            if (!item.date) return false;
+                            
+                            // Converte a string do CSV para Objeto Date
+                            // Formato padrão Reddit: 2025-10-14 12:52:21 UTC
+                            const itemDate = new Date(item.date);
+                            
+                            // Verifica se é válida e se é >= 01/01/2025
+                            return !isNaN(itemDate) && itemDate >= START_DATE_2025 && itemDate <= END_DATE_2025;
+                        });
+
+                        console.log(`Total ${key} em 2025: ${processedData[key].length}`);
+                    } else {
+                        // Votos geralmente não têm data, mantemos todos
+                        processedData[key] = rawData;
+                    }
+                }
             }
         }
 
+        // Validação básica se sobrou algo depois do filtro
         if (processedData.posts.length === 0 && processedData.comments.length === 0) {
-            alert("ZIP inválido. Verifique seus arquivos.");
-            isLoading.set(false);
-            return;
+            // Se o usuário upou um zip antigo ou sem nada de 2025
+            const confirmEmpty = confirm("Não encontramos posts ou comentários de 2025 neste arquivo. Deseja carregar mesmo assim?");
+            if (!confirmEmpty) {
+                isLoading.set(false);
+                return;
+            }
         }
 
         redditStore.set({
             posts: processedData.posts.map(p => ({...p, ups: 0, enriched: false})),
-            comments: processedData.comments.map(c => ({...c, ups: 0, enriched: false})), // Init Comments
+            comments: processedData.comments.map(c => ({...c, ups: 0, enriched: false})),
             post_votes: processedData.post_votes,
             comment_votes: processedData.comment_votes,
             user: 'Reddit User'
