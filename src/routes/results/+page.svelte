@@ -22,7 +22,6 @@
 
   const MEDALS = ['🥇', '🥈', '🥉'];
 
-  // --- CORREÇÃO 1: Função formatK adicionada ---
   const formatK = (num) => {
       if (!num) return '';
       if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -64,7 +63,6 @@
         ...topSubsUpvotes.map(s => s.label)
     ];
 
-    // O enrichSubreddits agora é inteligente e não vai floodar
     enrichSubreddits(allSubNames, (newData) => {
         subDetails = { ...subDetails, ...newData };
     });
@@ -270,7 +268,7 @@
                     <div class="content-wrapper">
                         <div class="info-side">
                             <h2 class="title">
-                                <a href={`https://www.reddit.com${post.permalink}`} target="_blank">{post.title}</a>
+                                <a href={`${post.permalink}`} target="_blank">{post.title}</a>
                             </h2>
                             <div class="meta">
                                 <span class="subreddit">r/{post.subreddit}</span> • 
@@ -286,7 +284,7 @@
                         </div>
                         {#if post.url && (post.url.includes('i.redd.it') || post.url.match(/\.(jpeg|jpg|gif|png)$/))}
                             <div class="image-side">
-                                <a href={`https://www.reddit.com${post.permalink}`} target="_blank">
+                                <a href={`${post.permalink}`} target="_blank">
                                     <img src={post.url} alt="Post thumb" />
                                 </a>
                             </div>
@@ -317,7 +315,7 @@
                             <div class="stats-bar">
                                 <div class="stat upvotes"><span class="icon">⬆️</span> {comment.ups || 0} upvotes</div>
                                 <div class="stat-link">
-                                    <a href={`https://www.reddit.com${comment.permalink}`} target="_blank">View Context ↗</a>
+                                    <a href={`${comment.permalink}`} target="_blank">View Context ↗</a>
                                 </div>
                             </div>
                         </div>
@@ -577,7 +575,7 @@
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     border: 1px solid #eee;
-    width: 100%; /* Força largura total */
+    width: 100%; 
   }
 
   /* Headers Coloridos */
@@ -632,7 +630,7 @@
   }
   .rich-item.compact {
     padding: 10px 20px;
-    border-right: 1px solid #f0f0f0; /* Divisória vertical */
+    border-right: 1px solid #f0f0f0;
     border-bottom: 1px solid #f0f0f0;
   }
   .rich-item.compact .sub-icon-wrapper { width: 30px; height: 30px; margin-right: 10px; }

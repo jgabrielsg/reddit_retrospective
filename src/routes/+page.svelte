@@ -1,10 +1,9 @@
 <script>
   import { onMount } from 'svelte';
-  import { goto } from '$app/navigation'; // Importante para navegação
+  import { goto } from '$app/navigation';
   import { zipAdded, isLoading } from '$lib/stores/dataStore.js';
   import { handleZipUpload } from '$lib/utils/zipProcessor.js';
 
-  // Animação de entrada
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -18,13 +17,13 @@
 
   function onFileSelected(e) {
     if (e.target.files.length > 0) {
-        // 1. Marca que o zip foi adicionado
+        // Marca que o zip foi adicionado
         zipAdded.set(true);
         
-        // 2. Inicia o processamento (background)
+        // Inicia o processamento 
         handleZipUpload(e.target.files[0]);
         
-        // 3. Redireciona para a página de resultados IMEDIATAMENTE
+        // Redireciona para a página de resultados
         goto('/results');
     }
   }
